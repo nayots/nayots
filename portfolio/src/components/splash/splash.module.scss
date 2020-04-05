@@ -2,4 +2,11 @@
   color: white;
   font-size: 2rem;
   font-weight: 600;
+  .links {
+    a {
+      color: inherit;
+      margin-right: 1rem;
+      font-size: 3rem;
+    }
+  }
 }
