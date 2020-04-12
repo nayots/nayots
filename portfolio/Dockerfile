@@ -1,7 +1,9 @@
 # build environment
 FROM node:8-alpine as react-build
+RUN apk add --no-cache --virtual .gyp python make g++
 WORKDIR /app
 COPY . ./
+RUN npm ci
 RUN npm run build
 
 # server environment
@@ -13,3 +15,7 @@ RUN sh -c "envsubst '\$PORT'  < /etc/nginx/conf.d/configfile.template > /etc/ngi
 COPY --from=react-build /app/build /usr/share/nginx/html
 EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
+
+#for CI run this after
+#gcloud builds submit --tag gcr.io/nayots-portfolio-273419/portfolio
+#gcloud beta run deploy portfolio --image gcr.io/nayots-portfolio-273419/portfolio --platform managed
