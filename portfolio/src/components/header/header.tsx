@@ -7,7 +7,7 @@ export const Header: React.FC<{}> = (props): JSX.Element => {
       <div className={styles.navList}>
         <div className={styles.logo}>
           <img
-            src="https://res.cloudinary.com/fehbot/image/upload/c_scale,h_300/v1586104852/portfolio/stoyan-grigorov-logo.svg"
+            src="https://res.cloudinary.com/fehbot/image/upload/v1586806555/portfolio/Stoyan_Grigorov_logo-small.png"
             alt="logo"
           />
         </div>
