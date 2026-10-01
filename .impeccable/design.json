@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-01T00:00:00Z",
+  "title": "Design System: nayots — GitHub profile",
+  "extensions": {
+    "upstream": {
+      "brand": "../nayots_branding/BRAND.md",
+      "tokens": "../nayots_branding/brand/tokens/tokens.json",
+      "note": "Palette, marks and brand type are owned upstream and read-only here; colour keys reuse the upstream token names."
+    },
+    "colorMeta": {
+      "navy-bg": { "role": "neutral", "displayName": "Navy Ground", "canonical": "#04060D", "tonalRamp": ["oklch(15% 0.02 270)", "oklch(26% 0.02 270)", "oklch(38% 0.02 270)", "oklch(49% 0.02 270)", "oklch(61% 0.02 270)", "oklch(72% 0.02 270)", "oklch(84% 0.02 270)", "oklch(95% 0.02 270)"] },
+      "ice-white": { "role": "neutral", "displayName": "Ice White", "canonical": "#F1F5FF", "tonalRamp": ["oklch(15% 0.015 270)", "oklch(26% 0.015 270)", "oklch(38% 0.015 270)", "oklch(49% 0.015 270)", "oklch(61% 0.015 270)", "oklch(72% 0.015 270)", "oklch(84% 0.015 270)", "oklch(95% 0.015 270)"] },
+      "ice-accent": { "role": "secondary", "displayName": "Ice Accent", "canonical": "#99D1FF", "tonalRamp": ["oklch(15% 0.09 245)", "oklch(26% 0.09 245)", "oklch(38% 0.09 245)", "oklch(49% 0.09 245)", "oklch(61% 0.09 245)", "oklch(72% 0.09 245)", "oklch(84% 0.09 245)", "oklch(95% 0.09 245)"] },
+      "star-tone": { "role": "secondary", "displayName": "Star Tone", "canonical": "#AAD7FF", "tonalRamp": ["oklch(15% 0.075 245)", "oklch(26% 0.075 245)", "oklch(38% 0.075 245)", "oklch(49% 0.075 245)", "oklch(61% 0.075 245)", "oklch(72% 0.075 245)", "oklch(84% 0.075 245)", "oklch(95% 0.075 245)"] },
+      "gold-accent": { "role": "primary", "displayName": "Gold Accent", "canonical": "#FFBD57", "tonalRamp": ["oklch(15% 0.14 75)", "oklch(26% 0.14 75)", "oklch(38% 0.14 75)", "oklch(49% 0.14 75)", "oklch(61% 0.14 75)", "oklch(72% 0.14 75)", "oklch(84% 0.14 75)", "oklch(95% 0.14 75)"] },
+      "gold-highlight": { "role": "primary", "displayName": "Gold Highlight", "canonical": "#FFCD78", "tonalRamp": ["oklch(15% 0.12 80)", "oklch(26% 0.12 80)", "oklch(38% 0.12 80)", "oklch(49% 0.12 80)", "oklch(61% 0.12 80)", "oklch(72% 0.12 80)", "oklch(84% 0.12 80)", "oklch(95% 0.12 80)"] },
+      "nebula-core": { "role": "neutral", "displayName": "Nebula Core", "canonical": "#141C3A", "tonalRamp": ["oklch(15% 0.06 272)", "oklch(26% 0.06 272)", "oklch(38% 0.06 272)", "oklch(49% 0.06 272)", "oklch(61% 0.06 272)", "oklch(72% 0.06 272)", "oklch(84% 0.06 272)", "oklch(95% 0.06 272)"] },
+      "scene-stop-1": { "role": "neutral", "displayName": "Scene Stop 1", "canonical": "#0A0F21", "tonalRamp": ["oklch(15% 0.035 272)", "oklch(26% 0.035 272)", "oklch(38% 0.035 272)", "oklch(49% 0.035 272)", "oklch(61% 0.035 272)", "oklch(72% 0.035 272)", "oklch(84% 0.035 272)", "oklch(95% 0.035 272)"] },
+      "scene-stop-3": { "role": "neutral", "displayName": "Scene Stop 3", "canonical": "#030509", "tonalRamp": ["oklch(15% 0.01 260)", "oklch(26% 0.01 260)", "oklch(38% 0.01 260)", "oklch(49% 0.01 260)", "oklch(61% 0.01 260)", "oklch(72% 0.01 260)", "oklch(84% 0.01 260)", "oklch(95% 0.01 260)"] }
+    },
+    "typographyMeta": {
+      "headline": { "displayName": "Heading (.h)", "purpose": "Plate titles, the hero name and constellation labels; ice-white, lowercase, -0.035em." },
+      "body": { "displayName": "Body (.b)", "purpose": "Hero subline, ledes and work blurbs; ice-white at fill-opacity 0.74, max 3 lines wide / 2 narrow." },
+      "label": { "displayName": "Meta (.m)", "purpose": "Stack/licence lines, the sky date and month ticks; star-tone at fill-opacity 0.86 (ticks 0.62)." },
+      "action": { "displayName": "Action (.a)", "purpose": "The single link line on a work plate, gold-highlight, followed by a path arrow, pinned at h - 40." }
+    },
+    "shadows": [
+      { "name": "raster-lift", "value": "feDropShadow dx=0 dy=14 stdDeviation=16 flood-color=#030509 flood-opacity=.9", "purpose": "Only under a sourced raster window (the AI Usage Monitor screenshot), paired with a 70-unit bottom fade. Never on marks or type." }
+    ],
+    "motion": [
+      { "name": "ignite", "value": "ny-ig 1.6s cubic-bezier(.16,1,.3,1) both; opacity .3 -> 1", "purpose": "Star slices brighten left to right, once; starts visible." },
+      { "name": "twinkle", "value": "ny-tw 4.6s / 6.9s / 9.3s ease-in-out infinite; opacity var(--o,.85) <-> .18", "purpose": "About 28% of field stars, three cadences so nothing pulses in unison." },
+      { "name": "pulse", "value": "ny-pulse 5.8s ease-in-out infinite; scale 1 -> .82, opacity 1 -> .78", "purpose": "Glints breathe rather than blink." },
+      { "name": "rise", "value": "ny-rise 1.1s cubic-bezier(.16,1,.3,1) both; translateY(5px) -> none", "purpose": "Text settles; never hidden by its entrance." },
+      { "name": "draw", "value": "ny-draw 1.1s (constellations) / 2.4s (streak) cubic-bezier(.65,0,.35,1) both; stroke-dashoffset len -> 0", "purpose": "Lines trace themselves in; the only entrance that starts from nothing, rendered whole when motion is off." },
+      { "name": "ping", "value": "ny-ping 3.2s cubic-bezier(.16,1,.3,1) infinite; scale .6 -> 2.6, opacity .9 -> 0", "purpose": "Today's ring on the sky plate." },
+      { "name": "reduced-motion", "value": "@media (prefers-reduced-motion:reduce){*{animation:none!important}}", "purpose": "Last rule in every plate's CSS." }
+    ],
+    "breakpoints": [
+      { "name": "narrow", "value": "540px", "note": "max-width media query inside each SVG, measured on the rendered <img> width; hides .w, shows .n, scales the hero mark 1.32x." }
+    ],
+    "plates": {
+      "viewBoxWidth": 840,
+      "radius": 20,
+      "heights": { "hero": 340, "constellations": 320, "work-usage-monitor": 300, "work-nayots": 300, "sky": 360 },
+      "corners": { "hero": "all", "constellations": "top", "work-usage-monitor": "none", "work-nayots": "none", "sky": "bottom" },
+      "seams": [
+        { "between": ["constellations", "work-usage-monitor"], "x": 640 },
+        { "between": ["work-usage-monitor", "work-nayots"], "x": 200 },
+        { "between": ["work-nayots", "sky"], "x": 560 }
+      ],
+      "seamNebula": { "rx": 250, "ry": 78, "opacity": 0.95 },
+      "glintControlRatio": 0.306
+    }
+  },
+  "components": [
+    {
+      "name": "Plate",
+      "kind": "card",
+      "refersTo": "plate",
+      "description": "A navy sky plate on the 840-unit viewBox; a standalone plate rounds all corners, a run rounds only its outer ones.",
+      "html": "<div class=\"ds-plate\"><svg viewBox=\"0 0 840 300\" width=\"100%\" role=\"img\" aria-label=\"plate\"><rect width=\"840\" height=\"300\" fill=\"#04060D\"/><ellipse cx=\"640\" cy=\"150\" rx=\"260\" ry=\"170\" fill=\"#141C3A\" opacity=\".6\"/><circle cx=\"120\" cy=\"60\" r=\".8\" fill=\"#F1F5FF\" opacity=\".5\"/><circle cx=\"480\" cy=\"230\" r=\"1.3\" fill=\"#AAD7FF\" opacity=\".8\"/><text x=\"40\" y=\"76\" font-size=\"36\" class=\"ds-h\">the working sky</text><text x=\"40\" y=\"120\" font-size=\"18\" class=\"ds-b\">Five territories — and the stars between them.</text></svg></div>",
+      "css": ".ds-plate { width: 420px; border-radius: 10px; overflow: hidden; background: #04060D; } .ds-plate svg { display: block; } .ds-h { font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif; font-weight: 700; letter-spacing: -.035em; fill: #F1F5FF; } .ds-b { font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif; font-weight: 500; fill: #F1F5FF; fill-opacity: .74; }"
+    },
+    {
+      "name": "Glint",
+      "kind": "custom",
+      "refersTo": "glint",
+      "description": "Gold four-point star with control points at 0.306 of the radius, a soft halo and an ice-white core; it breathes.",
+      "html": "<svg class=\"ds-glint\" viewBox=\"0 0 40 40\" width=\"40\" height=\"40\" aria-hidden=\"true\"><defs><radialGradient id=\"ds-halo-gold\"><stop offset=\"0\" stop-color=\"#FFBD57\" stop-opacity=\".55\"/><stop offset=\".35\" stop-color=\"#FFBD57\" stop-opacity=\".16\"/><stop offset=\"1\" stop-color=\"#FFBD57\" stop-opacity=\"0\"/></radialGradient></defs><rect width=\"40\" height=\"40\" fill=\"#04060D\"/><circle cx=\"20\" cy=\"20\" r=\"16.1\" fill=\"url(#ds-halo-gold)\"/><path d=\"M20 13.8Q21.9 18.1 26.2 20Q21.9 21.9 20 26.2Q18.1 21.9 13.8 20Q18.1 18.1 20 13.8Z\" fill=\"#FFCD78\"/><circle cx=\"20\" cy=\"20\" r=\"1.12\" fill=\"#F1F5FF\"/></svg>",
+      "css": ".ds-glint { display: block; transform-origin: 50% 50%; animation: ds-pulse 5.8s ease-in-out infinite; } @keyframes ds-pulse { 0%,100% { transform: scale(1); opacity: 1 } 50% { transform: scale(.82); opacity: .78 } } @media (prefers-reduced-motion: reduce) { .ds-glint { animation: none; } }"
+    },
+    {
+      "name": "Starfield (three star classes)",
+      "kind": "custom",
+      "refersTo": "starfield",
+      "description": "Dust (ice-white, faint), star (star-tone, brighter) and glint; stars ignite from opacity .3, a share twinkles.",
+      "html": "<svg class=\"ds-field\" viewBox=\"0 0 200 80\" width=\"300\" aria-hidden=\"true\"><rect width=\"200\" height=\"80\" fill=\"#04060D\"/><circle cx=\"20\" cy=\"18\" r=\".6\" fill=\"#F1F5FF\" opacity=\".4\"/><circle cx=\"64\" cy=\"52\" r=\".8\" fill=\"#F1F5FF\" opacity=\".3\"/><circle cx=\"110\" cy=\"24\" r=\"1.4\" fill=\"#AAD7FF\" opacity=\".85\" class=\"ds-tw\"/><circle cx=\"150\" cy=\"62\" r=\".5\" fill=\"#F1F5FF\" opacity=\".55\"/><path d=\"M178 14Q179.2 16.8 182 18Q179.2 19.2 178 22Q176.8 19.2 174 18Q176.8 16.8 178 14Z\" fill=\"#FFCD78\"/></svg>",
+      "css": ".ds-field { display: block; animation: ds-ig 1.6s cubic-bezier(.16,1,.3,1) both; } .ds-tw { animation: ds-tw 4.6s ease-in-out infinite; } @keyframes ds-ig { from { opacity: .3 } to { opacity: 1 } } @keyframes ds-tw { 0%,100% { opacity: .85 } 50% { opacity: .18 } } @media (prefers-reduced-motion: reduce) { .ds-field, .ds-tw { animation: none; } }"
+    },
+    {
+      "name": "Constellation",
+      "kind": "custom",
+      "refersTo": "constellation",
+      "description": "Ice-accent hairlines between halo stars, drawn in; a dashed bridge links neighbouring figures.",
+      "html": "<svg class=\"ds-const\" viewBox=\"0 0 200 90\" width=\"300\" aria-hidden=\"true\"><rect width=\"200\" height=\"90\" fill=\"#04060D\"/><g stroke=\"#99D1FF\" stroke-opacity=\".55\" stroke-width=\"1.15\" stroke-linecap=\"round\"><line class=\"ds-draw\" x1=\"20\" y1=\"60\" x2=\"70\" y2=\"30\" style=\"stroke-dasharray:58.3;--len:58.3\"/><line class=\"ds-draw\" x1=\"70\" y1=\"30\" x2=\"120\" y2=\"50\" style=\"stroke-dasharray:53.9;--len:53.9\"/></g><line x1=\"120\" y1=\"50\" x2=\"180\" y2=\"40\" stroke=\"#99D1FF\" stroke-opacity=\".32\" stroke-dasharray=\"2 5\" stroke-linecap=\"round\"/><circle cx=\"20\" cy=\"60\" r=\"1.9\" fill=\"#F1F5FF\"/><circle cx=\"70\" cy=\"30\" r=\"2.5\" fill=\"#F1F5FF\"/><circle cx=\"120\" cy=\"50\" r=\"1.9\" fill=\"#F1F5FF\"/><circle cx=\"180\" cy=\"40\" r=\"1.9\" fill=\"#F1F5FF\"/><text x=\"70\" y=\"18\" text-anchor=\"middle\" font-size=\"11\" class=\"ds-label\">frontend</text></svg>",
+      "css": ".ds-const { display: block; } .ds-draw { animation: ds-draw 1.1s cubic-bezier(.65,0,.35,1) both; } @keyframes ds-draw { from { stroke-dashoffset: var(--len) } to { stroke-dashoffset: 0 } } .ds-label { font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif; font-weight: 700; letter-spacing: -.035em; fill: #F1F5FF; fill-opacity: .86; } @media (prefers-reduced-motion: reduce) { .ds-draw { animation: none; } }"
+    },
+    {
+      "name": "Action Link",
+      "kind": "button",
+      "refersTo": "action-link",
+      "description": "The one gold link line on a work plate, followed by a stroked path arrow; the whole plate is the link.",
+      "html": "<a class=\"ds-action\" href=\"#\"><span>view the repository</span><svg viewBox=\"0 0 14 12\" width=\"14\" height=\"12\" aria-hidden=\"true\"><path d=\"M1 6H13M8.3 1.5L13 6L8.3 10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a>",
+      "css": ".ds-action { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; background: #04060D; color: #FFCD78; font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif; font-weight: 700; font-size: 17px; letter-spacing: -.01em; text-decoration: none; border-radius: 6px; } .ds-action svg { transition: transform .2s cubic-bezier(.16,1,.3,1); } .ds-action:hover svg { transform: translateX(3px); } .ds-action:focus-visible { outline: 1px solid #99D1FF; outline-offset: 2px; }"
+    },
+    {
+      "name": "Work Plate Text Block",
+      "kind": "custom",
+      "refersTo": "plate-heading",
+      "description": "Heading, body blurb, meta line and action: the four type roles in their built order.",
+      "html": "<div class=\"ds-work\"><div class=\"ds-work-h\">ai usage monitor</div><p class=\"ds-work-b\">See how much of your AI coding plan is left without opening a session to ask.</p><div class=\"ds-work-m\">windows 11 · c# · mit licence · no telemetry</div><div class=\"ds-work-a\">view the repository</div></div>",
+      "css": ".ds-work { background: #04060D; padding: 28px 40px; font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif; max-width: 520px; } .ds-work-h { font-weight: 700; font-size: 36px; letter-spacing: -.035em; color: #F1F5FF; line-height: 1.1; } .ds-work-b { font-weight: 500; font-size: 18px; line-height: 27px; color: rgba(241,245,255,.74); margin: 14px 0 10px; } .ds-work-m { font-weight: 500; font-size: 15px; color: rgba(170,215,255,.86); } .ds-work-a { margin-top: 28px; font-weight: 700; font-size: 17px; letter-spacing: -.01em; color: #FFCD78; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "One Night Sky",
+    "overview": "The profile is a single observation of a navy night sky, cut into plates. Every image in the README is a self-contained SVG drawn from the same vocabulary (`scripts/lib/sky.mjs`): the same ground, the same three classes of star, the same type, the same motion. Stacked in one Markdown paragraph, the plates meet at seams where half-nebulae line up, so the column reads as one continuous sky, not a stack of cards. The sky stays navy in both GitHub themes; the page around it changes, the sky does not.\n\nDensity is low and luminous. Type is lowercase Space Grotesk set on the sky. Stars keep clear of every word and of the brand marks, and gold is rare: it marks glints and the one action on each work plate. Motion is ambient and slow (stars ignite once, twinkle, glints breathe, lines draw in) and everything stays readable with motion off.\n\nThis repository does not own the identity. Palette, marks and brand type come from the sibling repository `nayots_branding`: `BRAND.md` and `brand/tokens/tokens.json` (read-only, upstream). The colour tokens below repeat the subset of that palette the plates use, with the upstream names. If upstream changes, upstream wins, and this file and `C` in `scripts/lib/sky.mjs` follow it. The GitHub rendering constraints the system is built around (images only through `<img>`, no script, no external loads, the sanitizer's allow-list, never `<picture>` inside `<a>`, assets under ~500 KB) are recorded in `AGENTS.md` and are not repeated here.",
+    "keyCharacteristics": [
+      "Flat navy plates, all on an 840-unit viewBox, joined into one run with seams that line up.",
+      "Three star classes: dust, star and the gold four-point glint.",
+      "Four type roles: heading, body, meta and action.",
+      "Two text layouts per plate, wide and narrow, switched inside the SVG at 540px.",
+      "Official particle marks nested unaltered, sitting directly in the sky through `lighten` blending.",
+      "Entrance motion begins from a visible state; reduced motion is honoured."
+    ],
+    "rules": [
+      { "name": "The Upstream Palette Rule", "body": "No colour outside `nayots_branding` tokens, ever. A new tint is an opacity on an existing token, not a new hex.", "section": "colors" },
+      { "name": "The Rare Gold Rule", "body": "Gold goes on glints, the single action on a work plate, and the streak line. Never on headings, body or decoration.", "section": "colors" },
+      { "name": "The Lowercase Sky Rule", "body": "Headings, labels and actions are lowercase. Sentence case is kept only for running body copy where proper nouns matter (Claude Code, Codex, GPU).", "section": "typography" },
+      { "name": "The Measured Text Rule", "body": "Text placement is computed from the embedded font's advance widths (`scripts/fonts/metrics.json`), so star keep-clear boxes and wraps match the rendered glyphs. A new character means rebuilding the subset and the metrics together.", "section": "typography" },
+      { "name": "The Light-Not-Shadow Rule", "body": "Depth is made with nebulae and halos, not with drop shadows or panels.", "section": "elevation" },
+      { "name": "The Shared Seam Rule", "body": "Where two plates meet, each carries half of the same nebula (250 × 78, opacity 0.95) centred on the shared edge at the same x. The current run is constellations ↔ usage monitor at x=640, usage monitor ↔ nayots.com at x=200, and nayots.com ↔ sky at x=560. Reordering or inserting a plate means re-pairing these x values.", "section": "elevation" }
+    ],
+    "dos": [
+      "**Do** build every plate through `plate()` in `scripts/lib/sky.mjs` on the 840-unit viewBox, and edit the generators, never the generated SVGs.",
+      "**Do** round only the outer corners of a run (radius 20) and pair seam half-nebulae at the same x across each shared edge.",
+      "**Do** use the three star classes and the 0.306-ratio glint for every point of light.",
+      "**Do** give every plate both a `.w` and a `.n` layout and check it at 360px and 830px, in both GitHub themes, with and without reduced motion.",
+      "**Do** start entrance animations from a visible state and keep the reduced-motion rule last in the plate CSS.",
+      "**Do** nest official marks verbatim and composite particle masters with `mix-blend-mode:lighten`.",
+      "**Do** take palette, marks and brand type from `nayots_branding` (`BRAND.md`, `brand/tokens/tokens.json`)."
+    ],
+    "donts": [
+      "**Don't** introduce a colour outside the nayots tokens; vary opacity instead.",
+      "**Don't** mask, feather, recolour, glow, outline, crop into, or put a container behind a brand mark.",
+      "**Don't** set gold on headings, body or decoration; it marks glints, the action and the streak only.",
+      "**Don't** draw icons or arrows as text glyphs; draw them as paths.",
+      "**Don't** let stars land on text or mark ink; route every new text run through its keep-clear box.",
+      "**Don't** break the run with spacing or wrappers between seamed plates, or wrap a `<picture>` in a link."
+    ]
+  }
+}
