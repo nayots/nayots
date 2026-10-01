@@ -184,31 +184,72 @@ const TYPE_CSS = [
   `.a{font-weight:700;letter-spacing:-.01em;fill:${C.goldHi}}`,
 ].join("");
 
-// The plate: rounded navy ground, clipped content, accessible title.
-export function plate({ id, w = W, h, title, desc, defs = "", css = "", body, weights = [500, 700] }) {
+// Below this rendered width (CSS px of the <img>) a plate swaps its `.w` text
+// for a `.n` layout with fewer, larger words; ~0.43 scale on a phone column.
+export const NARROW = 540;
+const NARROW_CSS = `.n{display:none}@media (max-width:${NARROW}px){.w{display:none}.n{display:inline}}`;
+
+// Frame outline. Plates stacked into one run round only the run's outer corners.
+function framePath(w, h, corners) {
+  const t = corners === "all" || corners === "top" ? RADIUS : 0;
+  const b = corners === "all" || corners === "bottom" ? RADIUS : 0;
+  return (
+    `M${t} 0H${w - t}${t ? `A${t} ${t} 0 0 1 ${w} ${t}` : ""}V${h - b}${b ? `A${b} ${b} 0 0 1 ${w - b} ${h}` : ""}` +
+    `H${b}${b ? `A${b} ${b} 0 0 1 0 ${h - b}` : ""}V${t}${t ? `A${t} ${t} 0 0 1 ${t} 0` : ""}Z`
+  );
+}
+
+// Half a nebula on each side of a seam, at the same x, so adjacent plates read
+// as one sky rather than a stack of cards.
+export function seams({ top, bottom }, h, id) {
+  let defs = "", el = "";
+  if (top != null) {
+    const n = nebula(`${id}-seam-t`, top, 0, 250, 78, 0.95);
+    defs += n.def; el += n.el;
+  }
+  if (bottom != null) {
+    const n = nebula(`${id}-seam-b`, bottom, h, 250, 78, 0.95);
+    defs += n.def; el += n.el;
+  }
+  return { defs, el };
+}
+
+// Bounding box of a text run (for keeping dust stars off the words).
+export function textBox(text, x, baseline, size, weight = 700, anchor = "start", pad = 8) {
+  const tracking = weight === 700 ? -0.035 : 0;
+  const w = measure(text, size, weight, tracking);
+  const x0 = anchor === "middle" ? x - w / 2 : anchor === "end" ? x - w : x;
+  return { x: x0 - pad, y: baseline - size * 0.82 - pad, w: w + pad * 2, h: size * 1.08 + pad * 2 };
+}
+
+// The plate: navy ground, clipped content, accessible title.
+export function plate({ id, w = W, h, title, desc, defs = "", css = "", body, weights = [500, 700], corners = "all" }) {
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-labelledby="${id}-t ${id}-d">` +
     `<title id="${id}-t">${esc(title)}</title><desc id="${id}-d">${esc(desc)}</desc>` +
     `<defs>` +
-    `<clipPath id="ny-frame"><rect width="${w}" height="${h}" rx="${RADIUS}"/></clipPath>` +
+    `<clipPath id="ny-frame"><path d="${framePath(w, h, corners)}"/></clipPath>` +
     `<radialGradient id="ny-halo-gold"><stop offset="0" stop-color="${C.gold}" stop-opacity=".55"/><stop offset=".35" stop-color="${C.gold}" stop-opacity=".16"/><stop offset="1" stop-color="${C.gold}" stop-opacity="0"/></radialGradient>` +
     `<radialGradient id="ny-halo-ice"><stop offset="0" stop-color="${C.iceAccent}" stop-opacity=".5"/><stop offset=".35" stop-color="${C.iceAccent}" stop-opacity=".14"/><stop offset="1" stop-color="${C.iceAccent}" stop-opacity="0"/></radialGradient>` +
     defs +
     `</defs>` +
-    `<style>${fontFaces(weights)}${TYPE_CSS}${MOTION_CSS}${css}${REDUCED}</style>` +
+    `<style>${fontFaces(weights)}${TYPE_CSS}${MOTION_CSS}${NARROW_CSS}${css}${REDUCED}</style>` +
     `<g clip-path="url(#ny-frame)"><rect width="${w}" height="${h}" fill="${C.navy}"/>${body}</g>` +
     `</svg>\n`
   );
 }
 
-// Nest an official brand SVG verbatim, only re-placing its root box.
-export function nestBrandSvg(source, { x, y, width, height, mask }) {
+// Nest an official brand SVG verbatim, only re-placing its root box. `frame`
+// (a viewBox string) may narrow the window onto the mark's own clear space;
+// the mark's content is never touched.
+export function nestBrandSvg(source, { x, y, width, height, mask, frame }) {
   const svg = source.trim().replace(/^<\?xml[^>]*>\s*/, "");
   const open = svg.match(/^<svg\b[^>]*>/)[0];
-  const placed = open
+  let placed = open
     .replace(/\swidth="[^"]*"/, "")
     .replace(/\sheight="[^"]*"/, "")
     .replace(/^<svg\b/, `<svg x="${x}" y="${y}" width="${width}" height="${height}"`);
+  if (frame) placed = placed.replace(/\sviewBox="[^"]*"/, ` viewBox="${frame}"`);
   const nested = placed + svg.slice(open.length);
   return mask ? `<g mask="url(#${mask})">${nested}</g>` : nested;
 }
@@ -217,6 +258,27 @@ export function nestBrandSvg(source, { x, y, width, height, mask }) {
 export function featherMask(id, x, y, w, h, solid = 0.62) {
   return (
     `<radialGradient id="${id}-g" cx="0.5" cy="0.5" r="0.5"><stop offset="${solid}" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient>` +
+    `<mask id="${id}" maskUnits="userSpaceOnUse" x="${x}" y="${y}" width="${w}" height="${h}"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${id}-g)"/></mask>`
+  );
+}
+
+// Rectangular feather: fully opaque inside, fading over `f` units at each edge.
+// Used where an elliptical feather would reach into a wide mark's ink.
+export function featherRect(id, x, y, w, h, f) {
+  const fx = r2(f / w), fy = r2(f / h);
+  return (
+    `<linearGradient id="${id}-x"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="${fx}" stop-color="#fff"/><stop offset="${r2(1 - fx)}" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>` +
+    `<linearGradient id="${id}-y" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="${fy}" stop-color="#fff"/><stop offset="${r2(1 - fy)}" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>` +
+    `<mask id="${id}-mx" maskUnits="userSpaceOnUse" x="${x}" y="${y}" width="${w}" height="${h}"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${id}-x)"/></mask>` +
+    `<mask id="${id}" maskUnits="userSpaceOnUse" x="${x}" y="${y}" width="${w}" height="${h}"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${id}-y)" mask="url(#${id}-mx)"/></mask>`
+  );
+}
+
+// Bottom fade: content melts into navy over its last `f` units.
+export function fadeBottom(id, x, y, w, h, f) {
+  const s = r2(1 - f / h);
+  return (
+    `<linearGradient id="${id}-g" x2="0" y2="1"><stop offset="${s}" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>` +
     `<mask id="${id}" maskUnits="userSpaceOnUse" x="${x}" y="${y}" width="${w}" height="${h}"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${id}-g)"/></mask>`
   );
 }

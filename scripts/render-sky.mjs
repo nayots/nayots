@@ -9,7 +9,7 @@
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { C, W, root, plate, nebula, glint, esc, r1, r2, rng, starfield } from "./lib/sky.mjs";
+import { C, W, root, plate, nebula, glint, esc, r1, r2, rng, starfield, seams, textBox } from "./lib/sky.mjs";
 import { flattenDays, summarize, levels } from "./lib/calendar.mjs";
 
 const args = Object.fromEntries(
@@ -84,10 +84,9 @@ export function renderSky(calendar) {
     const l = lv[i];
     let el;
     if (l === 0) {
-      // Quiet days are faint dust, and not every one of them shows.
+      // Quiet days are faint dust — still one star each, as the title promises.
       const jr = rng(`dust-${d.date}`);
-      if (jr() < 0.45) return;
-      el = `<circle cx="${r1(x)}" cy="${r1(y)}" r="${r2(0.45 + jr() * 0.4)}" fill="${C.starTone}" opacity="${r2(0.12 + jr() * 0.18)}"/>`;
+      el =`<circle cx="${r1(x)}" cy="${r1(y)}" r="${r2(0.45 + jr() * 0.4)}" fill="${C.starTone}" opacity="${r2(0.12 + jr() * 0.18)}"/>`;
     } else {
       const r = [0, 1.15, 1.6, 2.15, 2.8][l];
       const color = l >= 3 ? C.ice : C.starTone;
@@ -119,18 +118,22 @@ export function renderSky(calendar) {
     `<circle cx="${r1(tx)}" cy="${r1(ty)}" r="5" fill="none" stroke="${C.iceAccent}" stroke-width="1" class="ping" style="transform-origin:${r1(tx)}px ${r1(ty)}px"/>` +
     glint(tx, ty, 4.2, { color: C.ice, halo: "ny-halo-ice" });
 
-  // Month ticks under the band, at each month's first week.
-  let months = "", lastMonth = -1;
-  days.forEach((d, i) => {
+  // Month ticks under the band, at each month's first week. The narrow layout
+  // keeps every third one at a size a phone can read.
+  const ticks = [];
+  let lastMonth = -1;
+  days.forEach((d) => {
     const m = Number(d.date.slice(5, 7)) - 1;
     if (m !== lastMonth && d.weekday === 0 && d.week > 0 && d.week < weeks - 2) {
-      const t = d.week / (weeks - 1);
-      months += `<text class="m" x="${r1(left + t * (right - left))}" y="${h - 26}" font-size="14" text-anchor="middle" fill-opacity=".58">${MONTHS[m]}</text>`;
+      ticks.push({ m, x: left + (d.week / (weeks - 1)) * (right - left) });
       lastMonth = m;
     } else if (lastMonth === -1) {
       lastMonth = m;
     }
   });
+  const tick = (t, size) => `<text class="m" x="${r1(t.x)}" y="${h - 26}" font-size="${size}" text-anchor="middle" fill-opacity=".62">${MONTHS[t.m]}</text>`;
+  const monthsWide = ticks.map((t) => tick(t, 14)).join("");
+  const monthsNarrow = ticks.filter((_, i) => i % 3 === 1).map((t) => tick(t, 28)).join("");
 
   const n1 = nebula("ny-neb-s1", 200, 250, 340, 90, 0.85);
   const n2 = nebula("ny-neb-s2", 600, 210, 340, 90, 0.85);
@@ -142,25 +145,41 @@ export function renderSky(calendar) {
   if (stats.longestStreak.length >= 2) parts.push(`longest streak ${stats.longestStreak.length} days`);
   const statLine = parts.join(" · ");
 
+  const heading = "the last year, one star per day";
+  const until = `to ${longDate(lastDate)}`;
+  const totalLine = `${fmt(stats.total)} contributions`;
+  const keepClear = [
+    textBox(heading, 40, 62, 30), textBox(statLine, 40, 94, 17, 500), textBox(until, W - 40, 62, 14, 500, "end"),
+    textBox(heading, 40, 64, 42), textBox(totalLine, 40, 108, 30, 500),
+    { x: 0, y: 120, w: W, h: 200 },
+  ];
+  const seam = seams({ top: 560 }, h, "ny-s");
+
   const body =
-    n1.el + n2.el + n3.el +
-    starfield({ w: W, h, count: 90, seed: `sky-dust-${lastDate}`, avoid: [{ x: 0, y: 120, w: W, h: 200 }] }) +
-    `<g class="rise" style="animation-delay:.1s">` +
-    `<text class="h" x="40" y="62" font-size="30">the last year, one star per day</text>` +
+    n1.el + n2.el + n3.el + seam.el +
+    starfield({ w: W, h, count: 90, seed: `sky-dust-${lastDate}`, avoid: keepClear }) +
+    `<g class="rise w" style="animation-delay:.1s">` +
+    `<text class="h" x="40" y="62" font-size="30">${heading}</text>` +
     `<text class="b" x="40" y="94" font-size="17">${esc(statLine)}</text>` +
+    `<text class="m" x="${W - 40}" y="62" font-size="14" text-anchor="end" fill-opacity=".62">${esc(until)}</text>` +
+    `</g>` +
+    `<g class="rise n" style="animation-delay:.1s">` +
+    `<text class="h" x="40" y="64" font-size="42">${heading}</text>` +
+    `<text class="b" x="40" y="108" font-size="30">${esc(totalLine)}</text>` +
     `</g>` +
     field + streak +
     `<g class="ig" style="animation-delay:1.6s">${glints}</g>` +
     `<g class="ig" style="animation-delay:2.2s">${today}</g>` +
-    `<g class="rise" style="animation-delay:1.2s">${months}` +
-    `<text class="m" x="${W - 40}" y="62" font-size="14" text-anchor="end" fill-opacity=".58">to ${esc(longDate(lastDate))}</text></g>`;
+    `<g class="rise w" style="animation-delay:1.2s">${monthsWide}</g>` +
+    `<g class="rise n" style="animation-delay:1.2s">${monthsNarrow}</g>`;
 
   return plate({
     id: "sky",
     h,
+    corners: "bottom",
     title: `The last year of GitHub activity as a night sky: ${statLine}`,
     desc: `A star map of ${login}'s GitHub contributions for the year to ${longDate(lastDate)}: one star per day arranged in an arcing band, brighter for busier days, gold four-point stars on the five busiest days, the longest streak drawn as a gold line, and the most recent day pulsing at the right end. ${statLine}.`,
-    defs: n1.def + n2.def + n3.def,
+    defs: n1.def + n2.def + n3.def + seam.defs,
     css:
       "@keyframes ny-draw{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}.draw{animation:ny-draw 2.4s cubic-bezier(.65,0,.35,1) both}" +
       "@keyframes ny-ping{0%{transform:scale(.6);opacity:.9}80%,100%{transform:scale(2.6);opacity:0}}.ping{animation:ny-ping 3.2s cubic-bezier(.16,1,.3,1) infinite}",
