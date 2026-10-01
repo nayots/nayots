@@ -9,7 +9,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   C, W, root, plate, starfield, nebula, glint, measure, wrap, esc, r1, r2, rng,
-  nestBrandSvg, featherMask, featherRect, fadeBottom, arrow, seams, textBox,
+  nestBrandSvg, fadeBottom, arrow, seams, textBox,
 } from "./lib/sky.mjs";
 
 const brand = (f) => readFileSync(join(root, "assets/brand", f), "utf8");
@@ -35,6 +35,9 @@ function hero() {
   const frame = { x: 200, y: 30, w: 680, h: 260 };
   const s = 597 / frame.w;
   const mw = r1(frame.w * s), mh = r1(frame.h * s), mx = r1((W - mw) / 2), my = 8;
+  // Ink box in plate units (stars stay off the letters themselves).
+  const ink = { x: mx + (252 - frame.x) * s, y: my + (80 - frame.y) * s, w: 574 * s, h: 160 * s };
+  const inkCy = ink.y + ink.h / 2;
 
   const n1 = nebula("ny-neb-a", 120, 330, 300, 150, 0.95);
   const n2 = nebula("ny-neb-b", 760, 30, 260, 130, 0.75);
@@ -58,12 +61,18 @@ function hero() {
 
   const body =
     n1.el + n2.el + n3.el +
-    starfield({ w: W, h, count: 230, seed: "hero", avoid: [...wide.boxes, ...narrow.boxes] }) +
+    starfield({ w: W, h, count: 230, seed: "hero", avoid: [ink, ...wide.boxes, ...narrow.boxes] }) +
     glints +
+    // The master is particles on opaque #04060D. Compositing with `lighten`
+    // lets that navy fall away wherever the sky behind is brighter, so the
+    // mark sits in the sky with no backing panel and no mask; its pixels are
+    // untouched. On a phone the whole mark scales up to stay above 64px.
+    `<g class="mark" style="mix-blend-mode:lighten">` +
     nestBrandSvg(brand("nayots-wordmark-particle-animated.svg"), {
-      x: mx, y: my, width: mw, height: mh, mask: "ny-mark-mask",
+      x: mx, y: my, width: mw, height: mh,
       frame: `${frame.x} ${frame.y} ${frame.w} ${frame.h}`,
     }) +
+    `</g>` +
     `<g class="rise w" style="animation-delay:.9s">${wide.el}</g>` +
     `<g class="rise n" style="animation-delay:.9s">${narrow.el}</g>`;
 
@@ -72,7 +81,8 @@ function hero() {
     h,
     title: "nayots — Stoyan Grigorov, software engineer, Sofia, Bulgaria",
     desc: "The nayots wordmark rendered as luminous stardust on a deep navy night sky, with the name Stoyan Grigorov and the line software engineer, Sofia, Bulgaria beneath it.",
-    defs: n1.def + n2.def + n3.def + featherRect("ny-mark-mask", mx, my, mw, mh, 34),
+    defs: n1.def + n2.def + n3.def,
+    css: `.mark{transform-origin:${W / 2}px ${r1(inkCy)}px}@media (max-width:540px){.mark{transform:scale(1.32)}}`,
     body,
   });
 }
@@ -89,11 +99,11 @@ const S = {
   U: [690, 222], V: [654, 156], X: [778, 248], Y: [712, 282],
 };
 const FIGURES = [
-  { name: ".net", edges: ["AB", "BC", "CD", "DE"], alpha: "C", label: [672, 126] },
+  { name: ".net", edges: ["AB", "BC", "CD", "DE"], alpha: "C", label: [686, 26] },
   { name: "aws", edges: ["FG", "GH", "HI", "IK"], alpha: "H", label: [150, 302] },
   { name: "frontend", edges: ["KL", "LM", "MN", "NK", "KO", "OM"], alpha: "O", label: [346, 152] },
   { name: "infrastructure", edges: ["PQ", "PR", "QR", "QSb", "RT", "SbT"], alpha: "P", label: [538, 306] },
-  { name: "ai", edges: ["UR", "UV", "UX", "UY", "UE", "VE"], alpha: "U", label: [776, 296] },
+  { name: "ai", edges: ["UR", "UV", "UX", "UY", "UE", "VE"], alpha: "U", label: [742, 204] },
 ];
 const BRIDGES = ["LQ", "TY"];
 const pair = (e) => (e.length === 2 ? [e[0], e[1]] : e.startsWith("Sb") ? ["Sb", e.slice(2)] : [e[0], e.slice(1)]);
@@ -239,7 +249,7 @@ function usageMonitor() {
 
 function nayotsCom() {
   const size = 270, x = 548, y = 14;
-  const visual = nestBrandSvg(brand("nayots-n-particle-animated.svg"), { x, y, width: size, height: size, mask: "ny-n-mask" });
+  const visual = `<g style="mix-blend-mode:lighten">${nestBrandSvg(brand("nayots-n-particle-animated.svg"), { x, y, width: size, height: size })}</g>`;
   return workPlate({
     id: "work-nayots",
     seed: "nayots-com",
@@ -250,7 +260,6 @@ function nayotsCom() {
     meta: "webgl · three.js · static on vercel",
     action: "visit nayots.com",
     visual,
-    defs: featherMask("ny-n-mask", x, y, size, size, 0.66),
     alt: {
       title: "nayots.com — personal site",
       desc: "nayots.com: a name rendered as luminous stardust, about a hundred thousand GPU-simulated particles forming the wordmark, built with WebGL and three.js and served statically on Vercel. Shows the nayots keystone-star monogram in particles. Links to nayots.com.",

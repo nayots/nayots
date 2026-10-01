@@ -152,6 +152,8 @@ export function renderSky(calendar) {
     textBox(heading, 40, 62, 30), textBox(statLine, 40, 94, 17, 500), textBox(until, W - 40, 62, 14, 500, "end"),
     textBox(heading, 40, 64, 42), textBox(totalLine, 40, 108, 30, 500),
     { x: 0, y: 120, w: W, h: 200 },
+    ...ticks.map((t) => textBox(MONTHS[t.m], t.x, h - 26, 14, 500, "middle")),
+    ...ticks.map((t) => textBox(MONTHS[t.m], t.x, h - 26, 28, 500, "middle")),
   ];
   const seam = seams({ top: 560 }, h, "ny-s");
 
