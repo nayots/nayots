@@ -1,0 +1,8 @@
+# Pin LF so generated SVGs are byte-stable across machines and CI
+*.svg text eol=lf
+*.mjs text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.woff2 binary
+*.webp binary
