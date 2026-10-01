@@ -19,3 +19,8 @@ npm-debug.log*
 # Scratch
 *.zip
 bash.exe.stackdump
+
+# Local visual preview harness
+.preview/
+.impeccable/review/
+.claude/launch.json
