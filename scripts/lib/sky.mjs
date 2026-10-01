@@ -239,10 +239,11 @@ export function plate({ id, w = W, h, title, desc, defs = "", css = "", body, we
   );
 }
 
-// Nest an official brand SVG verbatim, only re-placing its root box. `frame`
+// Nest an official brand SVG verbatim, only re-placing its root box. Never
+// masked or contained: plates composite it with mix-blend-mode:lighten. `frame`
 // (a viewBox string) may narrow the window onto the mark's own clear space;
 // the mark's content is never touched.
-export function nestBrandSvg(source, { x, y, width, height, mask, frame }) {
+export function nestBrandSvg(source, { x, y, width, height, frame }) {
   const svg = source.trim().replace(/^<\?xml[^>]*>\s*/, "");
   const open = svg.match(/^<svg\b[^>]*>/)[0];
   let placed = open
@@ -250,31 +251,11 @@ export function nestBrandSvg(source, { x, y, width, height, mask, frame }) {
     .replace(/\sheight="[^"]*"/, "")
     .replace(/^<svg\b/, `<svg x="${x}" y="${y}" width="${width}" height="${height}"`);
   if (frame) placed = placed.replace(/\sviewBox="[^"]*"/, ` viewBox="${frame}"`);
-  const nested = placed + svg.slice(open.length);
-  return mask ? `<g mask="url(#${mask})">${nested}</g>` : nested;
+  return placed + svg.slice(open.length);
 }
 
-// Feathered elliptical mask: lets a nested opaque navy box melt into the sky.
-export function featherMask(id, x, y, w, h, solid = 0.62) {
-  return (
-    `<radialGradient id="${id}-g" cx="0.5" cy="0.5" r="0.5"><stop offset="${solid}" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient>` +
-    `<mask id="${id}" maskUnits="userSpaceOnUse" x="${x}" y="${y}" width="${w}" height="${h}"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${id}-g)"/></mask>`
-  );
-}
-
-// Rectangular feather: fully opaque inside, fading over `f` units at each edge.
-// Used where an elliptical feather would reach into a wide mark's ink.
-export function featherRect(id, x, y, w, h, f) {
-  const fx = r2(f / w), fy = r2(f / h);
-  return (
-    `<linearGradient id="${id}-x"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="${fx}" stop-color="#fff"/><stop offset="${r2(1 - fx)}" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>` +
-    `<linearGradient id="${id}-y" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="${fy}" stop-color="#fff"/><stop offset="${r2(1 - fy)}" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>` +
-    `<mask id="${id}-mx" maskUnits="userSpaceOnUse" x="${x}" y="${y}" width="${w}" height="${h}"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${id}-x)"/></mask>` +
-    `<mask id="${id}" maskUnits="userSpaceOnUse" x="${x}" y="${y}" width="${w}" height="${h}"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${id}-y)" mask="url(#${id}-mx)"/></mask>`
-  );
-}
-
-// Bottom fade: content melts into navy over its last `f` units.
+// Bottom fade: content melts into navy over its last `f` units (screenshots only,
+// never a brand mark).
 export function fadeBottom(id, x, y, w, h, f) {
   const s = r2(1 - f / h);
   return (
